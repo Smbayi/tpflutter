@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "725971926828",
+    "project_id": "fluttertp-8771e",
+    "storage_bucket": "fluttertp-8771e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:725971926828:android:3e07d42f70e5ec817a7689",
+        "android_client_info": {
+          "package_name": "com.example.tpflutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWY9nHTz0hSBGTeVkMfKyBy56P4KOURoM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
