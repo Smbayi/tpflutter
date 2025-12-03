@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../services/auth_service.dart';
 
+
+
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
@@ -27,7 +29,27 @@ class _RegisterPageState extends State<RegisterPage> {
             const SizedBox(height: 15),
             _inputField("Mot de passe", passwordController, obscure: true),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 15),
+
+            // ✅ LIGNE AJOUTÉE
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text("Déjà un compte ? "),
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: const Text(
+                    "Se connecter",
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 25),
 
             _button("S’inscrire", () async {
               final error = await auth.register(
@@ -65,9 +87,13 @@ class _RegisterPageState extends State<RegisterPage> {
         alignment: Alignment.bottomCenter,
         child: Padding(
           padding: const EdgeInsets.only(bottom: 30),
-          child: Text(title,
-              style:
-                  const TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ),
     );
@@ -99,8 +125,9 @@ class _RegisterPageState extends State<RegisterPage> {
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
           ),
           onPressed: onTap,
           child: Text(text, style: const TextStyle(fontSize: 18)),

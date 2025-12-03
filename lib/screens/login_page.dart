@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 import '../services/auth_service.dart';
 import 'register_page.dart';
+import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -11,9 +12,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final auth = AuthService();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final AuthService auth = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            _header("Connexion"),
+            _header(),
 
             const SizedBox(height: 40),
 
@@ -39,9 +40,7 @@ class _LoginPageState extends State<LoginPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => const RegisterPage(),
-                      ),
+                      MaterialPageRoute(builder: (_) => const RegisterPage()),
                     );
                   },
                   child: const Text(
@@ -57,31 +56,22 @@ class _LoginPageState extends State<LoginPage> {
 
             const SizedBox(height: 25),
 
-            _button("Se connecter", () async {
-              final error = await auth.login(
-                emailController.text.trim(),
-                passwordController.text.trim(),
-              );
-
-              if (error != null) {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text(error)));
-              } else {
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(const SnackBar(content: Text("Connexion réussie ✅")));
-              }
-            }),
+            _loginButton(),
 
             const SizedBox(height: 30),
 
             _socialRow(),
+
+            const SizedBox(height: 30),
           ],
         ),
       ),
     );
   }
 
-  Widget _header(String title) {
+  // ==================== WIDGETS ====================
+
+  Widget _header() {
     return Container(
       height: 220,
       width: double.infinity,
@@ -94,20 +84,24 @@ class _LoginPageState extends State<LoginPage> {
           bottomRight: Radius.circular(60),
         ),
       ),
-      child: Align(
+      child: const Align(
         alignment: Alignment.bottomCenter,
         child: Padding(
-          padding: const EdgeInsets.only(bottom: 30),
-          child: Text(title,
-              style:
-                  const TextStyle(fontSize: 26, fontWeight: FontWeight.bold)),
+          padding: EdgeInsets.only(bottom: 30),
+          child: Text(
+            "Connexion",
+            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+          ),
         ),
       ),
     );
   }
 
-  Widget _inputField(String hint, TextEditingController controller,
-      {bool obscure = false}) {
+  Widget _inputField(
+    String hint,
+    TextEditingController controller, {
+    bool obscure = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25),
       child: TextField(
@@ -123,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _button(String text, VoidCallback onTap) {
+  Widget _loginButton() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25),
       child: SizedBox(
@@ -132,11 +126,15 @@ class _LoginPageState extends State<LoginPage> {
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
           ),
-          onPressed: onTap,
-          child: Text(text, style: const TextStyle(fontSize: 18)),
+          onPressed: _handleLogin,
+          child: const Text(
+            "Se connecter",
+            style: TextStyle(fontSize: 18),
+          ),
         ),
       ),
     );
@@ -155,11 +153,39 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _socialIcon(String asset) {
+  Widget _socialIcon(String assetPath) {
     return CircleAvatar(
       radius: 22,
       backgroundColor: Colors.grey.shade200,
-      child: Image.asset(asset, width: 22),
+      child: Image.asset(assetPath, width: 22),
     );
+  }
+
+  // ==================== LOGIQUE LOGIN ====================
+
+  Future<void> _handleLogin() async {
+    final String email = emailController.text.trim();
+    final String password = passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Tous les champs sont obligatoires")),
+      );
+      return;
+    }
+
+    final String? error = await auth.login(email, password);
+
+    if (!mounted) return;
+
+    if (error != null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error)));
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const HomePage()),
+        (route) => false,
+      );
+    }
   }
 }
