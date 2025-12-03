@@ -12,7 +12,7 @@ class SocialButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: 22,
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(255, 0, 0, 0),
       child: Image.asset(
         iconPath,
         width: 22,
